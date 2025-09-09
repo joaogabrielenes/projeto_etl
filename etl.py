@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from utils_log import log_decorator
 
+
 @log_decorator
 def extract():
     url = "https://pokeapi.co/api/v2/pokemon?limit=10000"
@@ -12,35 +13,34 @@ def extract():
     data = response.json()
     return data["results"]
 
+
 @log_decorator
 def transform(dados):
     pokemons = []
 
     for item in dados:
         pokemon_id = item["url"].strip("/").split("/")[-1]
-        pokemons.append({
-            "id": int(pokemon_id),
-            "Nome Pokemon": item["name"]
-        })
-
+        pokemons.append({"id": int(pokemon_id), "Nome Pokemon": item["name"]})
 
     df_pokemon = pd.DataFrame(pokemons)
-    df_pokemon['Nome Pokemon'] = df_pokemon["Nome Pokemon"].str.upper()
+    df_pokemon["Nome Pokemon"] = df_pokemon["Nome Pokemon"].str.upper()
 
-    df_pokemon= df_pokemon[df_pokemon["Nome Pokemon"].str[0].isin(["B", "C","V", "R"])]
+    df_pokemon = df_pokemon[
+        df_pokemon["Nome Pokemon"].str[0].isin(["B", "C", "V", "R"])
+    ]
     df_pokemon = df_pokemon.sort_values(by=["id"]).reset_index(drop=True)
 
-    
-    return df_pokemon 
+    return df_pokemon
 
 
 @log_decorator
 def load():
-    dados_extraidos = extract()           
+    dados_extraidos = extract()
     data_resultados = transform(dados_extraidos)
     os.makedirs("data", exist_ok=True)
     data_resultados.to_parquet("data/pokemons.parquet", index=False)
     data_resultados.to_csv("data/pokemons.csv", index=False)
     print("ETL concluido")
+
 
 load()
