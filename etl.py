@@ -1,7 +1,9 @@
 import requests
 import pandas as pd
 import os
+from utils_log import log_decorator
 
+@log_decorator
 def extract():
     url = "https://pokeapi.co/api/v2/pokemon?limit=10000"
     response = requests.get(url)
@@ -10,7 +12,7 @@ def extract():
     data = response.json()
     return data["results"]
 
-
+@log_decorator
 def transform(dados):
     pokemons = []
 
@@ -32,7 +34,7 @@ def transform(dados):
     return df_pokemon 
 
 
-
+@log_decorator
 def load():
     dados_extraidos = extract()           
     data_resultados = transform(dados_extraidos)
