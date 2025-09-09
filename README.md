@@ -34,11 +34,11 @@ João Enes
 
 ## Como rodar
 
-poetry run python etl.py
+- poetry run python etl.py
 
 ## Dependências principais
--pandas
--requests
--loguru
--fastparquet
--black
+- pandas
+- requests
+- loguru
+- fastparquet
+- black
